@@ -1,0 +1,33 @@
+---
+version: "2"
+services:
+  hydra2:
+    image: linuxserver/hydra2:arm64v8-latest
+    container_name: hydra2
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - TZ=Europe/Berlin
+    volumes:
+      - /docker/config/hydra2:/config
+      - /ssd/download:/downloads
+    ports:
+      - 5076:5076
+    restart: unless-stopped
+    networks:
+      - web
+      - default
+    expose:
+      - "5076"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.hydra2.entrypoints=websecure"
+      - traefik.http.routers.hydra2.rule=Host(`hydra2.eth0.zone`)
+      - traefik.http.routers.hydra2.tls=true
+      - traefik.http.routers.hydra2.tls.certresolver=le
+      - traefik.http.routers.hydra2.middlewares=hydra2@docker
+      - "traefik.http.middlewares.hydra2.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+      - traefik.http.services.hydra2.loadbalancer.server.port=5076
+networks:
+  web:
+    external: true

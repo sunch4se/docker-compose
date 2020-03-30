@@ -1,0 +1,64 @@
+## Dynamic configuration
+http:
+  middlewares:
+    whitelist:
+      ipWhiteList:
+        sourceRange:
+          - "192.168.188.0/24"
+          - "10.88.88.0/24"
+
+  routers:
+    Router-1:
+      rule: "Host(`fritzbox.eth0.zone`)"
+      middlewares:
+        - whitelist
+      service: fritzbox
+      tls:
+        certResolver: le
+        domains:
+          - main: "*.eth0.zone"
+    Router-2:
+      rule: "Host(`tvh.eth0.zone`)"
+      middlewares:
+        - whitelist
+      service: tvh
+      tls:
+        certResolver: le
+        domains:
+          - main: "*.eth0.zone"
+    Router-3:
+      rule: "Host(`pihole.eth0.zone`)"
+      middlewares:
+        - whitelist
+      service: pihole
+      tls:
+        certResolver: le
+        domains:
+          - main: "*.eth0.zone"
+    Router-4:
+      rule: "Host(`nas.eth0.zone`)"
+      middlewares:
+        - whitelist
+      service: nas
+      tls:
+        certResolver: le
+        domains:
+          - main: "*.eth0.zone"
+
+  services:
+    fritzbox:
+      loadBalancer:
+        servers:
+          - url: "http://fritz.box:80"
+    tvh:
+      loadBalancer:
+        servers:
+          - url: "http://rock.eth0.zone:9981"
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.188.220:80/admin"
+    nas:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.188.208:5000"

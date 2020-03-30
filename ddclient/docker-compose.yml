@@ -1,0 +1,13 @@
+---
+version: "2"
+services:
+  ddclient:
+    image: linuxserver/ddclient:arm64v8-latest
+    container_name: ddclient
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - TZ=Europe/Berlin
+    volumes:
+      - /docker/config/ddclient:/config
+    restart: unless-stopped

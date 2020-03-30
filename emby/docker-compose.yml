@@ -1,0 +1,38 @@
+version: '3'
+services:
+  emby:
+    image: emby/embyserver_arm64v8
+    container_name: emby
+    volumes:
+      - /docker/config/emby:/config
+      - /ssd/media/movies:/mnt/share1
+      - /ssd/media/series:/mnt/share2
+      - /ssd/media/livetv:/mnt/share3
+    restart: always
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - GIDLIST=1002
+      - TZ=Europe/Berlin
+    ports:
+      - 8096:8096        
+    networks:
+      - web
+      - default
+    devices:
+      - /dev/dri:/dev/dri
+    expose:
+      - "8096"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.emby.entrypoints=websecure"
+      - traefik.http.routers.emby.rule=Host(`emby.eth0.zone`)
+      - traefik.http.routers.emby.tls=true
+      - traefik.http.routers.emby.tls.certresolver=le
+      - traefik.http.routers.emby.middlewares=emby@docker
+      - "traefik.http.middlewares.emby.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+      - traefik.http.services.emby.loadbalancer.server.port=8096
+
+networks:
+  web:
+    external: true

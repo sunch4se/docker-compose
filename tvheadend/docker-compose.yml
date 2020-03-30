@@ -1,0 +1,22 @@
+---
+version: "2"
+services:
+  tvheadend:
+    image: linuxserver/tvheadend:arm64v8-latest
+    container_name: tvheadend
+    network_mode: host
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - TZ=Europe/Berlin
+      #- RUN_OPTS=<run options here> #optional
+    volumes:
+      - /docker/config/tvheadend:/config
+      #- <path to recordings>:/recordings
+    ports:
+      - 192.168.188.210:9981:9981
+      - 192.168.188.210:9982:9982
+    #devices:
+    #  - /dev/dri:/dev/dri #optional
+    #  - /dev/drb:/dev/dvb #optional
+    restart: always

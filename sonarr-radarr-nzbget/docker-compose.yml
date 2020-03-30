@@ -1,0 +1,156 @@
+version: '2'
+services:
+
+    nzbget:
+        image: linuxserver/nzbget:arm64v8-latest
+        container_name: nzbget
+        volumes:
+            - /docker/config/nzbget:/config
+            - /ssd/media:/media
+            - /ssd/download:/download
+        restart: always
+        environment:
+            - PUID=1002
+            - PGID=1002
+            - TZ=Europe/Berlin
+        ports:
+            - 6789:6789
+        networks:
+            - web
+            - default
+        expose:
+            - "6789"
+        labels:
+          - "traefik.docker.network=web"
+          - "traefik.http.routers.nzbget.entrypoints=websecure"
+          - traefik.http.routers.nzbget.rule=Host(`nzbget.eth0.zone`)
+          - traefik.http.routers.nzbget.tls=true
+          - traefik.http.routers.nzbget.tls.certresolver=le
+          - traefik.http.routers.nzbget.middlewares=nzbget@docker
+          - "traefik.http.middlewares.nzbget.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+          - traefik.http.services.nzbget.loadbalancer.server.port=6789
+
+    sonarr:
+        image: linuxserver/sonarr:arm64v8-latest
+        mem_limit: 768M
+        container_name: sonarr
+        depends_on:
+            - nzbget
+        volumes:
+            - /docker/config/sonarr:/config
+            - /ssd/download:/downloads
+            - /ssd/media/series:/tv
+        restart: always
+        environment:
+            - PUID=1002
+            - PGID=1002
+            - TZ=Europe/Berlin
+        ports:
+            - 8989:8989
+        networks:
+            - web
+            - default
+        expose:
+            - "8989"
+        labels:
+          - "traefik.docker.network=web"
+          - "traefik.http.routers.sonarr.entrypoints=websecure"
+          - traefik.http.routers.sonarr.rule=Host(`sonarr.eth0.zone`)
+          - traefik.http.routers.sonarr.tls=true
+          - traefik.http.routers.sonarr.tls.certresolver=le
+          - traefik.http.routers.sonarr.middlewares=sonarr@docker
+          - "traefik.http.middlewares.sonarr.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+          - traefik.http.services.sonarr.loadbalancer.server.port=8989
+
+    radarr:
+        image: linuxserver/radarr:arm64v8-latest
+        mem_limit: 768M
+        container_name: radarr
+        #depends_on:
+        #    - nzbget
+        volumes:
+            - /docker/config/radarr:/config
+            - /ssd/download:/downloads
+            - /ssd/media/movies:/movies
+        restart: always
+        environment:
+            - PUID=1002
+            - PGID=1002
+            - TZ=Europe/Berlin
+        ports:
+             - 7878:7878        
+        networks:
+            - web
+            - default
+        expose:
+            - "7878"
+        labels:
+          - "traefik.docker.network=web"
+          - "traefik.http.routers.radarr.entrypoints=websecure"
+          - traefik.http.routers.radarr.rule=Host(`radarr.eth0.zone`)
+          - traefik.http.routers.radarr.tls=true
+          - traefik.http.routers.radarr.tls.certresolver=le
+          - traefik.http.routers.radarr.middlewares=radarr@docker
+          - "traefik.http.middlewares.radarr.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+          - traefik.http.services.radarr.loadbalancer.server.port=7878
+
+    radarr-telegram-bot:
+        image: sunchase/radarr-telegram-bot
+        container_name: telegram-radarr-bot
+        depends_on:
+            - radarr
+        volumes:
+            - /docker/config/radarr-telegram-bot:/config
+        restart: always
+        environment:
+            - PUID=1002
+            - PGID=1002
+
+    sonarr-telegram-bot:
+        image: sunchase/sonarr-telegram-bot
+        container_name: telegram-sonarr-bot
+        depends_on:
+            - sonarr
+        volumes:
+            - /docker/config/sonarr-telegram-bot:/config
+        restart: always
+        environment:
+            - PUID=1002
+            - PGID=1002
+
+    bazarr:
+        image: linuxserver/bazarr:arm64v8-latest
+        mem_limit: 512M
+        container_name: bazarr
+        depends_on:
+          - radarr
+          - sonarr
+        environment:
+          - PUID=1002
+          - PGID=1002
+          - TZ=Europe/Berlin
+        volumes:
+          - /docker/config/bazarr:/config
+          - /ssd/media/movies:/movies
+          - /ssd/media/series:/tv
+        ports:
+          - 6767:6767
+        restart: unless-stopped
+        networks:
+          - web
+          - default
+        expose:
+          - "6767"
+        labels:
+          - "traefik.docker.network=web"
+          - "traefik.http.routers.bazarr.entrypoints=websecure"
+          - traefik.http.routers.bazarr.rule=Host(`bazarr.eth0.zone`)
+          - traefik.http.routers.bazarr.tls=true
+          - traefik.http.routers.bazarr.tls.certresolver=le
+          - traefik.http.routers.bazarr.middlewares=bazarr@docker
+          - "traefik.http.middlewares.bazarr.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+          - traefik.http.services.bazarr.loadbalancer.server.port=6767
+
+networks:
+  web:
+    external: true
