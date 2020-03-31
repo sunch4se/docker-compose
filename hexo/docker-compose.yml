@@ -11,9 +11,7 @@ services:
     networks:
       - web
       - default
-    environment:
-      - PUID=1002
-      - PGID=1002
+    user: "1002:1002"
     expose:
       - "4000"
     labels:
