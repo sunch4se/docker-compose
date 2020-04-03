@@ -1,0 +1,24 @@
+version: "2.1"
+services:
+  wireguard:
+    image: sunchase/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - TZ=Europe/Berlin
+      #- SERVERURL=wireguard.domain.com #optional
+      - SERVERPORT=443 #optional
+      #- PEERS=1 #optional
+      - PEERDNS=192.168.188.220 #optional
+    volumes:
+      - /docker/config/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 443:443/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
