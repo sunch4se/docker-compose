@@ -1,8 +1,9 @@
-version: "2.1"
+linuxserver/wireguard:arm64v8-latestversion: "2.1"
 services:
   wireguard:
-    image: sunchase/wireguard
+    image: linuxserver/wireguard:arm64v8-latest
     container_name: wireguard
+    #network_mode: host
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -12,11 +13,12 @@ services:
       - TZ=Europe/Berlin
       - SERVERURL=wg.eth0.zone #optional
       - SERVERPORT=443 #optional
-      #- PEERS=1 #optional
+        #- PEERS=3 #optional
       - PEERDNS=192.168.188.220 #optional
     volumes:
       - /docker/config/wireguard:/config
       - /lib/modules:/lib/modules
+      - /usr/src:/usr/src
     ports:
       - 443:443/udp
     sysctls:
