@@ -53,7 +53,7 @@ http:
     tvh:
       loadBalancer:
         servers:
-          - url: "http://rock.eth0.zone:9981"
+          - url: "http://odroid.eth0.zone:9981"
     pihole:
       loadBalancer:
         servers:
