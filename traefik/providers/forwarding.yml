@@ -36,10 +36,10 @@ http:
         domains:
           - main: "*.eth0.zone"
     Router-4:
-      rule: "Host(`nas.eth0.zone`)"
+      rule: "Host(`syno.eth0.zone`)"
       middlewares:
         - whitelist
-      service: nas
+      service: syno
       tls:
         certResolver: le
         domains:
@@ -58,7 +58,7 @@ http:
       loadBalancer:
         servers:
           - url: "http://192.168.188.220:80/admin"
-    nas:
+    syno:
       loadBalancer:
         servers:
           - url: "http://192.168.188.208:5000"
