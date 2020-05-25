@@ -20,8 +20,7 @@ services:
       ServerIP: "192.168.188.220"
       #DNS1: "8.8.8.8"
       #DNS2: "8.8.4.4"
-      DNS1: "192.168.188.220#5035"
-      DNS2: "8.8.8.8"
+      DNS1: "192.168.188.220#5053"
       # WEBPASSWORD: 'set a secure password here or it will be random'
     # Volumes store your data between container upgrades
     volumes:
