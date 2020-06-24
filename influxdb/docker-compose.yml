@@ -1,0 +1,16 @@
+version: '3'
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb
+    restart: always
+    ports:
+      - "8086:8086"
+    volumes:
+      - /docker/config/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - /docker/config/influxdb/data:/var/lib/influxdb
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=1002
+      - PGID=1002
+      - GIDLIST=1002

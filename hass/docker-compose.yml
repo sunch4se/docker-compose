@@ -1,0 +1,14 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    volumes:
+      - /docker/config/hass:/config
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=1002
+      - PGID=1002
+      - GIDLIST=1002
+    restart: always
+    network_mode: host

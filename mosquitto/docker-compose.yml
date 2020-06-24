@@ -1,0 +1,20 @@
+version: "2"
+services:
+  mosquitto:
+    mem_limit: 512M
+    image: eclipse-mosquitto
+    container_name: mqtt
+    network_mode: host
+    restart: always
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - GIDLIST=1002
+      - TZ=Europe/Berlin
+    volumes:
+      - /docker/config/mosquitto/config:/mosquitto/config
+      - /docker/config/mosquitto/data:/mosquitto/data
+      - /docker/config/mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"

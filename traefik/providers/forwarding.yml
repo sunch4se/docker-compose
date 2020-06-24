@@ -44,6 +44,24 @@ http:
         certResolver: le
         domains:
           - main: "*.eth0.zone"
+    Router-5:
+      rule: "Host(`homebridge.eth0.zone`)"
+      middlewares:
+        - whitelist
+      service: homebridge
+      tls:
+        certResolver: le
+        domains:
+          - main: "*.eth0.zone"
+    Router-6:
+      rule: "Host(`ha.eth0.zone`)"
+      middlewares:
+        - whitelist
+      service: hass
+      tls:
+        certResolver: le
+        domains:
+          - main: "*.eth0.zone"
 
   services:
     fritzbox:
@@ -62,3 +80,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://192.168.188.208:5000"
+    homebridge:
+      loadBalancer:
+        servers:
+          - url: "http://homebridge.eth0.zone:8080"
+    hass:
+      loadBalancer:
+        servers:
+          - url: "http://ha.eth0.zone:8123"
