@@ -1,0 +1,16 @@
+version: "2"
+services:
+  valetudo-mapper:
+    image: rand256/valetudo-mapper:latest
+    container_name: valetudo-mapper
+    network_mode: host
+    restart: always
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - GIDLIST=1002
+      - TZ=Europe/Berlin
+    volumes:
+      - /docker/config/valetudo-mapper/config.json:/app/config.json
+    ports:
+      - "3001:3001"
