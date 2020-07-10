@@ -2,6 +2,7 @@
 version: "2"
 services:
   hydra2:
+    mem_limit: 512M
     image: linuxserver/nzbhydra2:arm64v8-latest
     container_name: hydra2
     environment:
