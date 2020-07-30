@@ -32,7 +32,7 @@ services:
 
     sonarr:
         image: linuxserver/sonarr:arm64v8-latest
-        mem_limit: 768M
+        mem_limit: 512M
         container_name: sonarr
         depends_on:
             - nzbget
