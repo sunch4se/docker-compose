@@ -1,0 +1,29 @@
+version: '3.6'
+services:
+  guacamole:
+    image: unsafetypin/guacamole
+    environment:
+    - EXTENSIONS=auth-totp
+    volumes:
+    - /docker/config/guacamole:/config
+    ports:
+    - "8080:8080"
+    networks:
+      - web
+      - default
+    restart: always 
+    expose:
+      - "8080"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.guac.entrypoints=websecure"
+      - traefik.http.routers.guac.rule=Host(`guac.eth0.zone`)
+      - traefik.http.routers.guac.tls=true
+      - traefik.http.routers.guac.tls.certresolver=le
+      - traefik.http.routers.guac.middlewares=guac@docker
+      - "traefik.http.middlewares.guac.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+      - traefik.http.services.guac.loadbalancer.server.port=8080
+
+networks:
+  web:
+    external: true

@@ -1,8 +1,9 @@
-version: '3'
+version: '2'
 services:
   homeassistant:
     container_name: home-assistant
     image: homeassistant/home-assistant:latest
+    mem_limit: 512M
     volumes:
       - /docker/config/hass:/config
     environment:

@@ -1,0 +1,38 @@
+version: '2.1'
+services:
+  jellyfin:
+    mem_limit: 512M
+    image: linuxserver/jellyfin:arm64v8-latest
+    container_name: jellyfin
+    volumes:
+      - /docker/config/jellyfin:/config
+      - /ssd/media/movies:/mnt/share1
+      - /ssd/media/series:/mnt/share2
+        #restart: always
+    environment:
+      - PUID=1002
+      - PGID=1002
+      - GIDLIST=1002
+      - TZ=Europe/Berlin
+    ports:
+      - 8096:8096        
+    networks:
+      - web
+      - default
+    devices:
+      - /dev/dri:/dev/dri
+    expose:
+      - "8096"
+    labels:
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.jellyfin.entrypoints=websecure"
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.eth0.zone`)
+      - traefik.http.routers.jellyfin.tls=true
+      - traefik.http.routers.jellyfin.tls.certresolver=le
+      - traefik.http.routers.jellyfin.middlewares=jellyfin@docker
+      - "traefik.http.middlewares.jellyfin.ipwhitelist.sourcerange=192.168.188.0/24, 10.88.88.0/24"
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+
+networks:
+  web:
+    external: true
