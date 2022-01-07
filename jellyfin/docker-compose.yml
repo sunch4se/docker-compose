@@ -8,7 +8,7 @@ services:
       - /docker/config/jellyfin:/config
       - /ssd/media/movies:/mnt/share1
       - /ssd/media/series:/mnt/share2
-    #restart: always
+    restart: always
     environment:
       - PUID=1002
       - PGID=1002
