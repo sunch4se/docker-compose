@@ -64,7 +64,7 @@ services:
 
     radarr:
         image: linuxserver/radarr:arm64v8-latest
-        mem_limit: 768M
+        mem_limit: 512M
         container_name: radarr
         #depends_on:
         #    - nzbget
